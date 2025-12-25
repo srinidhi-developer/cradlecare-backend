@@ -1,22 +1,29 @@
 import express from "express";
 import cors from "cors";
 
+// routes
+import contactRouter from "./routes/contact.routes.js";
+import authRouter from "./routes/auth.routes.js";
+import blynkRoutes from "./routes/blynk.routes.js";
+
 const app = express();
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || "*",
-    credentials: true
+  origin: "*",
+  credentials: true
 }));
 
-app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// ROUTES
-import contactRouter from "./routes/contact.routes.js";
-import authRouter from "./routes/auth.routes.js";
-
-// ROUTE DECLARATION
+// routes
 app.use("/api/v1", contactRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/blynk", blynkRoutes);
 
-export { app };
+// health check
+app.get("/", (req, res) => {
+  res.send("CradleCare Backend Running ✅");
+});
+
+export default app;
